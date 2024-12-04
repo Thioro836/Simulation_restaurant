@@ -1,7 +1,17 @@
 public class Cuisinier extends Thread {
+    private StandCuisson standCuisson;
 
     public Cuisinier(StandCuisson standCuisson) {
-        //TODO Auto-generated constructor stub
+        this.standCuisson = standCuisson;
     }
-    
+
+    public void run() {
+        try {
+            standCuisson.cuirePlat();
+        } catch (Exception e) {
+
+        }
+
+    }
+
 }

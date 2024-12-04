@@ -1,37 +1,58 @@
 public class StandCuisson {
-    private boolean platEnCours = false;// indique que le cuisinier est entrain de cuire un plat
-    private boolean platPret = false; // indique que le plat est prêt à être récupéré
 
-    /* client est au stand de cuisson */
-    public synchronized void attendreCuisson() {
-        while (platEnCours || platPret) {
+    private boolean isClient;// variable pour indiquer si le client est présent
+   // private boolean platPret = false; // indique si le plat est prêt à être récupéré
+     /* client est au stand de cuisson */
+     public StandCuisson(){
+        this.isClient=false;
+     }
+     public synchronized void attendreCuisson() {
+        while (isClient) {
+       
             try {
                 wait();
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        platEnCours = true;
+         isClient = true;
         System.out.println(Thread.currentThread().getName() + " attend que son plat soit cuit.");
-        notify(); // Notifie le cuisinier qu'il y a un client
-
+        notifyAll();
     }
-
-    // la cuisson des plats
     public synchronized void cuirePlat() {
-        while (!platEnCours) {
+         while (isClient==false) {
+       
             try {
                 wait();
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        platEnCours = false;
-        platPret = true; // Indique que le plat est prêt
+        System.out.println(Thread.currentThread().getName() + " commence à cuire le plat ");
+        try {
+            Thread.sleep(2000);
+           isClient=true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
         System.out.println(Thread.currentThread().getName() + " a terminé la cuisson.");
-        notify(); // on utilise notify car on ne peut cuisiner qu'un seul plat à la fois donc on
-                  // réveille un seul client
+       notify();
     }
+
+   
+
+    public synchronized void recupererPlat() {
+        while (!isClient) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+         isClient = false;
+        System.out.println(Thread.currentThread().getName() + " récupère son plat cuit.");
+        notifyAll();
+    }
+
 }
