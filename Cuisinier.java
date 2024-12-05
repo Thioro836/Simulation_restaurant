@@ -1,3 +1,4 @@
+package Partie1_Simulation;
 public class Cuisinier extends Thread {
     private StandCuisson standCuisson;
 
